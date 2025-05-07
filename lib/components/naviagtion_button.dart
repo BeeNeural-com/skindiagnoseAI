@@ -17,41 +17,47 @@ class NaviagtionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 1.0),
+      padding: const EdgeInsets.only(bottom: 16.0),
       child: Center(
         child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.lightGreen, // Background color
+            backgroundColor:
+                const Color.fromARGB(255, 236, 116, 12), // Main color
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(60),
+              borderRadius: BorderRadius.circular(50),
             ),
-            padding: EdgeInsets.only(
-              top: 5.0,
-              left: left,
-              right: 5.0,
-              bottom: 5.0,
+            padding: EdgeInsets.symmetric(
+              vertical: 14.0,
+              horizontal: left,
             ),
+            elevation: 4,
+            shadowColor: Colors.orangeAccent,
           ),
           child: Row(
-            // mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 buttonText,
-                style: const TextStyle(color: Colors.black54, fontSize: 16),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1.0,
+                ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 12),
               Container(
-                padding: const EdgeInsets.all(7.0),
-                decoration: BoxDecoration(
-                    border: Border.all(width: 2.0, color: Colors.black),
-                    borderRadius: BorderRadius.circular(40.0),
-                    color: Colors.black),
+                padding: const EdgeInsets.all(8.0),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
                 child: Icon(
                   icon,
-                  size: 35.0,
-                  color: Colors.white,
+                  size: 22.0,
+                  color: const Color.fromARGB(
+                      255, 236, 116, 12), // Match app color
                 ),
               ),
             ],
