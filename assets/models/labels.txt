@@ -1,0 +1,11 @@
+Apple Healthy
+Apple Scab
+Grapes Healthy
+Grapes Leaf Blight
+Not A Leaf
+Tomato Healthy
+Tomato Late Blight
+Tomato Early Blight
+Potato Healthy
+Potato Late Blight
+Potato Early Blight

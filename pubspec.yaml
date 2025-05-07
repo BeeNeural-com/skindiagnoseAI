@@ -1,0 +1,49 @@
+name: dtreatyflutter
+description: "A new Flutter project."
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.4.3 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  camera: ^0.11.0+1
+  tflite_v2: ^1.0.0
+  http: ^0.13.3
+  json_annotation: ^4.4.0
+  google_fonts: 4.0.4
+  redacted: ^1.0.12
+  firebase_core: ^3.3.0
+  firebase_auth: ^5.1.4
+  google_sign_in: ^6.2.1
+  internet_connection_checker_plus: ^1.0.1
+  fl_location: ^4.0.0
+  cloud_firestore: ^5.2.1
+  shared_preferences: ^2.3.2
+  image: ^4.2.0
+  image_picker: ^1.1.2
+  cupertino_icons: ^1.0.6
+  intl: ^0.19.0
+  lottie: ^3.0.0
+  flutter_spinkit: ^5.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  build_runner: ^2.1.7
+  json_serializable: ^6.1.1
+
+  flutter_lints: ^3.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/images/
+    - assets/models/
+    - assets/animations/
+    - assets/
