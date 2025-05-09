@@ -51,12 +51,12 @@ class _SplashScreenState extends State<SplashScreen> {
                   const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Logo or Icon
                   Center(
                     child: Image.asset(
-                      "./assets/images/logo.jpg", // <- Your App logo related to skin health
+                      "./assets/images/logo1.png", // <- Your App logo related to skin health
                       height: 120,
                     ),
                   ),
