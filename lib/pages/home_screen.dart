@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 20.0,
               ),
               const SizedBox(
-                height: 10.0,
+                height: 120.0,
               ),
               Row(
                 children: [
