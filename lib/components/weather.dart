@@ -21,7 +21,7 @@ class WeatherScreenState extends State<WeatherScreen> {
 
   Future<void> _fetchWeatherData() async {
     try {
-      final data = await WeatherService().fetchWeatherData(41.87, 87.62);
+      final data = await WeatherService().fetchWeatherData(35.92, 74.30);
       setState(() {
         globalWeatherData = data;
       });
@@ -35,7 +35,7 @@ class WeatherScreenState extends State<WeatherScreen> {
     return Column(
       children: [
         Text(
-          'SkinScan',
+          'SkinDiagnose',
           style: GoogleFonts.openSans(
             textStyle: const TextStyle(
               fontSize: 36,
