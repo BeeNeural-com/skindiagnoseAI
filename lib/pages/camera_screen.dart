@@ -1,10 +1,9 @@
+import 'package:dtreatyflutter/pages/additional_info_screen.dart';
 import 'package:dtreatyflutter/pages/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:tflite_v2/tflite_v2.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'treatment_screen.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -17,13 +16,11 @@ class CameraScreenState extends State<CameraScreen> {
   CameraController? _controller;
   List<CameraDescription>? cameras;
   bool _isCameraInitialized = false;
-  String? _prediction;
 
   @override
   void initState() {
     super.initState();
     _initializeCamera();
-    _loadModel();
   }
 
   Future<void> _initializeCamera() async {
@@ -37,86 +34,9 @@ class CameraScreenState extends State<CameraScreen> {
     }
   }
 
-  Future<void> _loadModel() async {
-    String? res = await Tflite.loadModel(
-      model: "assets/models/model_unquant.tflite",
-      labels: "assets/models/labels.txt",
-      numThreads: 1,
-      isAsset: true,
-      useGpuDelegate: false,
-    );
-    print(res);
-  }
-
-  Future<void> _classifyImage(String path) async {
-    var recognitions = await Tflite.runModelOnImage(
-      path: path,
-      numResults: 5,
-    );
-    setState(() {
-      if (recognitions?.isNotEmpty == true) {
-        double confidence = recognitions!.first['confidence'];
-        if (confidence > 0.7) {
-          _prediction = recognitions.first['label'];
-        } else {
-          _prediction = 'Not A Leaf';
-        }
-      } else {
-        _prediction = 'No Prediction';
-      }
-    });
-    if (_prediction == 'Not A Leaf' || _prediction == 'No Prediction') {
-      _showWarningDialog();
-    } else {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResultScreen(
-              prediction: _prediction ?? 'No Prediction',
-              imagePath: path,
-            ),
-          ));
-    }
-  }
-
-  void _showWarningDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Row(
-          children: [
-            Icon(Icons.warning_amber_rounded, color: Colors.orange[600]),
-            const SizedBox(width: 10),
-            const Text('Oops!'),
-          ],
-        ),
-        content: const Text('Only skin-related scans are supported.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK', style: TextStyle(color: Colors.orange)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _captureAndClassify() async {
-    try {
-      final image = await _controller?.takePicture();
-      if (image != null) {
-        await _classifyImage(image.path);
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
   @override
   void dispose() {
     _controller?.dispose();
-    Tflite.close();
     super.dispose();
   }
 
@@ -179,7 +99,23 @@ class CameraScreenState extends State<CameraScreen> {
               ),
               const SizedBox(height: 20),
               InkWell(
-                onTap: _captureAndClassify,
+                onTap: () async {
+                  try {
+                    final image = await _controller?.takePicture();
+                    if (image != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AdditionalDiseaseScreen(
+                            imagePath: image.path,
+                          ),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    print(e);
+                  }
+                },
                 borderRadius: BorderRadius.circular(50),
                 child: Container(
                   padding: const EdgeInsets.all(20),
