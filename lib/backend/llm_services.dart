@@ -1,9 +1,9 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class MedicalLLMService {
-  final String apiKey =
-      "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"; // replace securely
+  final String apiKey = dotenv.env['GROQ_API_KEY'] ?? "";
   final String baseUrl = "https://api.groq.com/openai/v1/chat/completions";
 
   Future<String> generateMedicalReport(
