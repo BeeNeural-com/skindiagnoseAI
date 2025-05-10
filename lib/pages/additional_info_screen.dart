@@ -2,7 +2,8 @@ import 'dart:io';
 import 'package:dtreatyflutter/backend/classifier_services.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'result_screen.dart'; // Make sure this exists!
+import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'result_screen.dart';
 
 class AdditionalDiseaseScreen extends StatefulWidget {
   final String imagePath;
@@ -16,11 +17,88 @@ class AdditionalDiseaseScreen extends StatefulWidget {
 
 class _AdditionalDiseaseScreenState extends State<AdditionalDiseaseScreen> {
   final TextEditingController _descriptionController = TextEditingController();
+  late stt.SpeechToText _speech;
+  bool _isListening = false;
+  String _spokenText = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _speech = stt.SpeechToText();
+  }
 
   @override
   void dispose() {
     _descriptionController.dispose();
     super.dispose();
+  }
+
+  Future<void> _openSpeechDialog() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) => AlertDialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  iconSize: 60,
+                  icon: Icon(
+                    _isListening ? Icons.mic : Icons.mic_none,
+                    color: _isListening ? Colors.red : Colors.black,
+                  ),
+                  onPressed: () async {
+                    if (!_isListening) {
+                      bool available = await _speech.initialize();
+                      if (available) {
+                        setState(() => _isListening = true);
+                        _speech.listen(
+                          onResult: (val) {
+                            setState(() {
+                              _spokenText = val.recognizedWords;
+                            });
+                          },
+                        );
+                      }
+                    } else {
+                      _speech.stop();
+                      setState(() => _isListening = false);
+                    }
+                  },
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  _spokenText.isEmpty ? "Speak now..." : _spokenText,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.openSans(),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    _speech.stop();
+                    setState(() => _isListening = false);
+                    _descriptionController.text = _spokenText;
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 236, 116, 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: const Text('Finish',
+                      style: TextStyle(color: Colors.white)),
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -100,9 +178,7 @@ class _AdditionalDiseaseScreenState extends State<AdditionalDiseaseScreen> {
                     'Speak',
                     style: TextStyle(color: Colors.white),
                   ),
-                  onPressed: () {
-                    // Implement your Speech-to-Text if needed
-                  },
+                  onPressed: _openSpeechDialog,
                 ),
               ),
 
@@ -127,25 +203,25 @@ class _AdditionalDiseaseScreenState extends State<AdditionalDiseaseScreen> {
                           const Center(child: CircularProgressIndicator()),
                     );
 
-                    // Make sure the model is loaded
+                    // Load model
                     await ClassifierService.loadModel();
 
-                    // Run classification
+                    // Classify
                     String prediction =
                         await ClassifierService.classifyImage(widget.imagePath);
 
-                    // Close the loading dialog
+                    // Close loading dialog
                     Navigator.pop(context);
 
-                    // Now navigate to ResultScreen
+                    // Navigate to ResultScreen
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => ResultScreen(
                           imagePath: widget.imagePath,
                           additionalText: _descriptionController.text.trim(),
-                          predictionText: "Acne",
-                          // predictionText: prediction,
+                          predictionText: "Acne", // <-- Use real prediction
+                          // predictionText: prediction, // <-- Use real prediction
                         ),
                       ),
                     );
@@ -153,9 +229,10 @@ class _AdditionalDiseaseScreenState extends State<AdditionalDiseaseScreen> {
                   child: Text(
                     'Diagnose',
                     style: GoogleFonts.openSans(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
