@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class WeatherData {
-  final int uvIndex;
+  final double uvIndex;
 
   WeatherData({
     required this.uvIndex,
@@ -10,7 +11,7 @@ class WeatherData {
 
   factory WeatherData.fromJson(Map<String, dynamic> json) {
     return WeatherData(
-      uvIndex: json['current']['uvi'],
+      uvIndex: (json['current']['uvi'] as num).toDouble(),
     );
   }
 }
@@ -25,7 +26,7 @@ class WeatherService {
 
   WeatherService._internal();
 
-  final String apiKey = '432a8658a6991c2c948f1125de99c13d';
+  final String apiKey = dotenv.env['OPENWEATHER_API_KEY'] ?? "";
   final String baseUrl = 'https://api.openweathermap.org/data/3.0/onecall';
 
   Future<WeatherData> fetchWeatherData(double lat, double lon) async {
